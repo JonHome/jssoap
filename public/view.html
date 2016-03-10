@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="zh" >
+  <head>
+    <meta charset="utf-8" >
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <meta content="telephone=no" name="format-detection" />
+    <title>营运通</title>				
+    <style type="text/css">
+      [v-cloak] ,
+      .init{
+        opacity: 0;
+        transition: all 0.15s cubic-bezier(0.68,-0.55,0.27,1.55);
+      }
+    </style>
+  </head>
+  <body id="app" class="init">
+			<style>
+				body ,.content{background:#f4f4f4;}
+				.bar-tab-footer > a{
+					position:relative;
+				}
+				.bar-tab-footer .badge{
+					position:absolute;
+					right:8px;
+					top:-4px;
+					background-color:#d9534f;
+					color:#fff;
+					z-index:88;
+				}
+				.bar-tab-footer .icon-box .icon{
+				}
+				.expand-transition {
+					transition: all .3s ease;
+					opacity: 1;
+				}
+				.expand-enter, .expand-leave {
+					opacity: 0;
+				}
+			</style>
+	        <header class="bar bar-nav" >
+	          <span class="pull-left" v-if="leftbar.length">
+	            <button class="btn btn-link btn-nav" @click="tool.method($event)" v-for="tool in leftbar" track-by="$index">
+	              <span :class="tool.icon"></span>
+	            </button>
+	          </span>
+	          <span class="pull-right" v-if="toolbar.length">
+	            <button class="btn btn-link btn-nav" @click="tool.method($event)" v-for="tool in toolbar" track-by="$index">
+	              <span :class="tool.icon"></span>
+	            </button>
+	          </span>
+	          <h1 class="title">
+	            {{title}}
+	          </h1>
+	        </header>
+	        <router-view transition="expand" ></router-view>
+	        <nav class="bar bar-tab bar-tab-footer" v-if="showFooter">
+	          <a class="tab-item" :class="{'active':label==nav.name}" v-link="{path:nav.link}" v-for="nav in navigator">
+      				<span class="badge" v-if="nav.count">{{nav.count}}</span>
+      				<span :class="nav.icon"></span>
+	            <div class="tab-label">{{nav.name}}</div>
+	          </a>
+	        </nav>
+  </body>
+  <script src="resource/require.js"></script>
+  <script src="resource/conf.js"></script>
+  <script>
+  	require(["./_view"])
+  </script>
+</html>

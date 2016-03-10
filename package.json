@@ -1,0 +1,32 @@
+{
+  "name": "websocket",
+  "version": "0.0.1",
+  "description": "websocket server",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node master --harmony-destructuring"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/the8th/socket.git"
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8080
+  },
+  "soap": {
+    "url": "http://132.228.169.145/mop/services/MopServerService"
+  },
+  "author": "zhangxu@ccssoft",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.2",
+    "cheerio": "^0.19.0",
+    "colors": "^1.1.2",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.3",
+    "os-utils": "0.0.14",
+    "socket.io": "^1.4.4",
+    "superagent": "^1.6.1"
+  }
+}
