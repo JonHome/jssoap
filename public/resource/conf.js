@@ -3,6 +3,7 @@ requirejs.config({
     paths: {
         "Vue" 			: 'lib/vue',
         "VueRouter" 	: "lib/vue-router",
+		"Promise" 		: 'lib/bluebird.min',
 		"jquery"		: 'lib/jquery.min',
 		"store"			: 'lib/store.min',	
 		"fastclick"		: 'lib/fastclick.min',		

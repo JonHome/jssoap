@@ -40,23 +40,18 @@ class Soap extends SoapTransfer {
 			return callback(null,this.simpleListTransfer(result,"actList"))
 		})
 	}
+	//光衰接口
+	ipossOperate(data,callback){
+		let router = "predealInterfaceBO.ipossOperate"
+		let xml = `<userId>b00128586</userId>
+			<productNativeNetId>0000003</productNativeNetId>
+			<areaId>0001</areaId>
+			<opType>4</opType>`
+		xml = this.simplePreWarpper(data.operator,router,xml)
+		this.warpper(xml,(err,result)=>{
+			if(err)return callback(err)
+			return callback(null,this.simpleListTransfer(result,"dictionaryItem"))
+		})
+	}
 }
-/*
-测试用例
-const soap = new Soap()
-console.log(soap)
-soap.getActivityId({
-	operator : "sa"
-},(err,result)=>{
-	if(err)console.log(err.stack)
-	console.log(result)
-})
-soap.getDictionary({
-	operator : "sa",
-	dictionary : "IDD_VISIT_IPOSSLOCATEFAULT_SPECIAITY"
-},(err,result)=>{
-	if(err)console.log(err.stack)
-	console.log(result)
-})
-*/
 module.exports = new Soap()

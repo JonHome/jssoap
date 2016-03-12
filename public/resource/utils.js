@@ -16,47 +16,45 @@ define(function(require){
 		}).showModal();
 	}
 	function get(url,callback,errCallback){	
-		$.get(url).done(function(msg){	
-			callback && callback(msg);
-		}).fail(function(ajax,err,msg){	
-			msg = ajax.responseText ||msg;
-			utils.alert(msg);
-			errCallback && errCallback(ajax,err,msg)
-		})
+		return ajax({	
+			url : url,
+			method : "get"
+		},callback,errCallback)
 	}
 	function post(url,data,callback,errCallback){	
-		$.post(url,data).done(function(msg){	
-			callback && callback(msg);
-		}).fail(function(ajax,err,msg){	
-			msg = ajax.responseText ||msg;
-			utils.alert(msg);
-			errCallback && errCallback(ajax,err,msg)
-		})
+		return ajax({	
+			url : url,
+			data : data,
+			method : "post"
+		},callback,errCallback)
 	}
 	function update(url,data,callback,errCallback){	
-		$.ajax({	
+		ajax({	
 			url : url,
 			data : data,
 			method : "put"
-		}).done(function(msg){	
-			callback && callback(msg);
-		}).fail(function(ajax,err,msg){	
-			msg = ajax.responseText ||msg;
-			utils.alert(msg);
-			errCallback && errCallback(ajax,err,msg)
-		});
+		},callback,errCallback)
 	}
 	function del(url,callback,errCallback){	
-		$.ajax({	
+		ajax({	
 			url : url,
 			method : "delete"
-		}).done(function(msg){	
-			callback && callback(msg);
+		},callback,errCallback)
+	}
+	function ajax(data,callback,errCallback){
+		$.ajax(data).done(function(msg,statu,ajax){	
+			if(msg.statu === 1)
+				callback && callback(msg.data)
+			else{
+				utils.alert(msg.message);
+				errCallback && errCallback(ajax,err,msg.message)
+			}
 		}).fail(function(ajax,err,msg){	
 			msg = ajax.responseText ||msg;
 			utils.alert(msg);
 			errCallback && errCallback(ajax,err,msg)
-		});
+		})
+
 	}
 	//###########################
 	//自然语言排序

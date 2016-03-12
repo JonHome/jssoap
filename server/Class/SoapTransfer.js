@@ -8,14 +8,17 @@ const utils = require("./../utils")
 //soap连接工具
 class SoapTransfer {
 	constructor(){
-		//true 从原始地址获取数据，false：从本地读取测试数据
-		this.dataSource = true
+		//是否利用本地测试数据
+		//如果本地缓存不存在则访问远端并写入文件
+		this.fromCache = true
+		//获得soap服务的物理地址
 		this.url = require("./../../package.json").soap.url
 	}
 	//加壳并发送请求
 	warpper(param,callback){
-		if(!this.dataSource){
-			return callback(null,this.getLocalResponse(param))
+		let fileName = this.getLocalResponseFileName(param)
+		if(this.fromCache && this.checkLocalResponse(fileName)){
+			return callback(null,this.getLocalResponse(fileName))
 		}
 		let string = `<soapenv:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://serverside.agent.webservice.ccssoft.com">
 		   <soapenv:Header/>
@@ -30,9 +33,11 @@ class SoapTransfer {
 			.set("Content-Type","text/xml; charset=UTF-8")
 			.set("SoapAction"," ")
 			.send(string)
+			.timeout(10000)
 			.end((err,res)=>{
 				if(err)return callback(err)
-				this.unwarpper(res.text,function(err,result){
+				this.unwarpper(res.text,(err,result)=>{
+					this.fromCache && this.setLocalResponse(fileName,result)
 					callback && callback(err,result)
 				})
 			})
@@ -46,11 +51,27 @@ class SoapTransfer {
 		if(status !== "200 OK")return callback(new Error(status))
 		callback(null,text)
 	}
-	//获得本地测试数据
-	getLocalResponse(param){
+	//根据文件指纹生成文件名称，排除auth部分以免无法缓存
+	getLocalResponseFileName(param){
 		let $ = cheerio.load(param)
-		let fileName = $("ServCode").text()
-		let path = Path.join(__dirname,"response",fileName+".xml")
+		param = $("service").text()
+		return utils.md5(param)
+	}
+	//检查本地文件是否存在。测试用，所以采用同步写法
+	checkLocalResponse(fileName){
+		let path = Path.join(__dirname,"../","response",fileName+".xml")
+		return fs.existsSync(path)
+	}
+	//将数据写入本地作为测试样本
+	setLocalResponse(fileName,result){
+		let path = Path.join(__dirname,"../","response",fileName+".xml")
+		fs.writeFile(path,result,"utf8",(err)=>{
+			err && console.log(err)
+		})
+	}
+	//获得本地测试数据
+	getLocalResponse(fileName){
+		let path = Path.join(__dirname,"../","response",fileName+".xml")
 		return new Buffer(fs.readFileSync(path)).toString()
 	}
 	//简单通用的列表转换工具
